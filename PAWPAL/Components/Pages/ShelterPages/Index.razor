@@ -1,0 +1,37 @@
+﻿@page "/shelters"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using PawPal.Models
+@using PAWPAL.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<PAWPAL.Data.ApplicationDbContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="shelters/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Shelter">
+    <PropertyColumn Property="shelter => shelter.Name" />
+    <PropertyColumn Property="shelter => shelter.Address" />
+
+    <TemplateColumn Context="shelter">
+        <a href="@($"shelters/edit?id={shelter.Id}")">Edit</a> |
+        <a href="@($"shelters/details?id={shelter.Id}")">Details</a> |
+        <a href="@($"shelters/delete?id={shelter.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private ApplicationDbContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

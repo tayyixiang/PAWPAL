@@ -1,0 +1,50 @@
+﻿@page "/shelters/create"
+@using Microsoft.EntityFrameworkCore
+@using PawPal.Models
+@inject IDbContextFactory<PAWPAL.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Shelter</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Shelter" OnValidSubmit="AddShelter" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <span class="text-danger">*</span>
+                <label for="name" class="form-label">Name:</label> 
+                <InputText id="name" @bind-Value="Shelter.Name" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => Shelter.Name" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="address" class="form-label">Address:</label> 
+                <InputText id="address" @bind-Value="Shelter.Address" class="form-control" /> 
+                <ValidationMessage For="() => Shelter.Address" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/shelters">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Shelter Shelter { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddShelter()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Shelter.Add(Shelter);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/shelters");
+    }
+}
