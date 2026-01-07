@@ -11,8 +11,8 @@ using PAWPAL.Data;
 namespace PAWPAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251212114721_InitialSetup")]
-    partial class InitialSetup
+    [Migration("20251231153147_RebuildInitial")]
+    partial class RebuildInitial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -212,6 +212,38 @@ namespace PAWPAL.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("PawPal.Models.Appointment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("AppointmentDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PetId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PetId");
+
+                    b.ToTable("Appointment");
+                });
+
             modelBuilder.Entity("PawPal.Models.Pet", b =>
                 {
                     b.Property<int>("Id")
@@ -227,6 +259,7 @@ namespace PAWPAL.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ImageUrl")
@@ -234,10 +267,15 @@ namespace PAWPAL.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ShelterId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -258,6 +296,7 @@ namespace PAWPAL.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -314,6 +353,17 @@ namespace PAWPAL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PawPal.Models.Appointment", b =>
+                {
+                    b.HasOne("PawPal.Models.Pet", "Pet")
+                        .WithMany()
+                        .HasForeignKey("PetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pet");
                 });
 
             modelBuilder.Entity("PawPal.Models.Pet", b =>

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PAWPAL.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateIdentitySchema : Migration
+    public partial class RebuildInitial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,6 +48,20 @@ namespace PAWPAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Shelter",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Address = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Shelter", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -156,6 +170,59 @@ namespace PAWPAL.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Pet",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Breed = table.Column<string>(type: "TEXT", nullable: false),
+                    Age = table.Column<int>(type: "INTEGER", nullable: false),
+                    ImageUrl = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
+                    ShelterId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Status = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pet", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Pet_Shelter_ShelterId",
+                        column: x => x.ShelterId,
+                        principalTable: "Shelter",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Appointment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AppointmentDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Notes = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    Status = table.Column<string>(type: "TEXT", nullable: false),
+                    PetId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Appointment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Appointment_Pet_PetId",
+                        column: x => x.PetId,
+                        principalTable: "Pet",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointment_PetId",
+                table: "Appointment",
+                column: "PetId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -192,11 +259,19 @@ namespace PAWPAL.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pet_ShelterId",
+                table: "Pet",
+                column: "ShelterId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Appointment");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -213,10 +288,16 @@ namespace PAWPAL.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Pet");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Shelter");
         }
     }
 }

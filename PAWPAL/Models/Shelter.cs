@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+using System.ComponentModel.DataAnnotations;
+
 namespace PawPal.Models
 {
     public class Shelter
@@ -7,12 +9,14 @@ namespace PawPal.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
-        public string Name { get; set; }
+        [Required(ErrorMessage = "Shelter Name is required")]
+        [StringLength(100, ErrorMessage = "Name cannot be longer than 100 characters")]
+        public string Name { get; set; } = string.Empty;
 
-        public string Address { get; set; }
+        [Required(ErrorMessage = "Address is required")]
+        public string Address { get; set; } = string.Empty;
 
-        // Relationship: One Shelter has many Pets
+        // Navigation Property: One Shelter has many Pets
         public virtual ICollection<Pet>? Pets { get; set; }
     }
 }

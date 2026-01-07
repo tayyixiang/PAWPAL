@@ -1,11 +1,16 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using PawPal.Models;
 
 namespace PAWPAL.Data
 {
+ 
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
-        public DbSet<PawPal.Models.Pet> Pet { get; set; } = default!;
-        public DbSet<PawPal.Models.Shelter> Shelter { get; set; } = default!;
+        // YIXIANG'S ENTITIES
+        public DbSet<Pet> Pet { get; set; } = default!;
+        public DbSet<Shelter> Shelter { get; set; } = default!;
+        public DbSet<Appointment> Appointment { get; set; } = default!;
+
     }
 }
