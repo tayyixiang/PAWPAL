@@ -1,36 +1,30 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PawPal.Models
+namespace PAWPAL.Models
 {
     public class Pet
     {
         [Key]
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(50, ErrorMessage = "Name is too long.")]
-        public string Name { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Name is required")]
+        public string Name { get; set; } = "";
 
         [Required]
-        public string Breed { get; set; } = string.Empty;
+        public string Species { get; set; } = "Dog"; // FOR FILTERS
 
-        [Range(0, 30, ErrorMessage = "Age must be between 0 and 30.")]
+        public string Breed { get; set; } = "";
+
+        [Range(0, 30, ErrorMessage = "Age must be between 0 and 30")]
         public int Age { get; set; }
 
-        public string? ImageUrl { get; set; } // We will store the file path here
+        public string? ImageUrl { get; set; }
 
-        [StringLength(500)]
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; }
 
-        // Relationship: A Pet belongs to a Shelter
-        [Required]
+        public string Status { get; set; } = "Available"; // Available, Adopted, Pending
+
+        // Relationship
         public int ShelterId { get; set; }
-
-        [ForeignKey("ShelterId")]
-        public virtual Shelter? Shelter { get; set; }
-
-        // Status tracking (Available, Adopted) - Important for Logic
-        public string Status { get; set; } = "Available";
     }
 }

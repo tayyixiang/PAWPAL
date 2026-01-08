@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PAWPAL.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PawPal.Models
+namespace PAWPAL.Models
 {
     public class Appointment
     {
@@ -9,24 +10,28 @@ namespace PawPal.Models
         public int Id { get; set; }
 
         [Required]
-        public DateTime AppointmentDate { get; set; }
+        public DateTime AppointmentDate { get; set; } = DateTime.Now.AddDays(1);
 
-        [StringLength(200)]
-        public string Notes { get; set; } = string.Empty;
-
-        // Status: "Pending", "Confirmed", "Rejected"
-        public string Status { get; set; } = "Pending";
-
-        // Relationship: Appointment is for ONE Pet
         [Required]
+        public string Status { get; set; } = "Pending"; // Pending, Confirmed, Rejected, Completed
+
+        // ADOPTER DETAILS
+        [Required(ErrorMessage = "Please enter your name")]
+        public string AdopterName { get; set; } = "";
+
+        [Required(ErrorMessage = "Please enter your email")]
+        [EmailAddress]
+        public string AdopterEmail { get; set; } = "";
+
+        //RELATIONS
+        public string? UserId { get; set; }
+
+        [ForeignKey("UserId")]
+        public virtual PAWPAL.Data.ApplicationUser? User { get; set; }
+
         public int PetId { get; set; }
 
         [ForeignKey("PetId")]
         public virtual Pet? Pet { get; set; }
-
-        // Relationship: Appointment is made by ONE User (Adopter)
-        // We use the Identity User ID (Guid string)
-        [Required]
-        public string UserId { get; set; } = string.Empty;
     }
 }

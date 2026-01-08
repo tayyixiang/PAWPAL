@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PAWPAL.Data;
-using PawPal.Models;
+using PAWPAL.Models;
 
 namespace PAWPAL.Repositories
 {

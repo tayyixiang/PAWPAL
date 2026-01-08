@@ -1,4 +1,4 @@
-﻿using PawPal.Models;
+﻿using PAWPAL.Models;
 
 namespace PAWPAL.Repositories
 {
