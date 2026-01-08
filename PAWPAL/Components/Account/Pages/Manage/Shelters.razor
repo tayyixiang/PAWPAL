@@ -1,0 +1,36 @@
+﻿@page "/shelters"
+@using PAWPAL.Models
+@using PAWPAL.Services
+@inject ShelterService ShelterService
+
+<PageTitle>Our Shelters</PageTitle>
+
+<div class="container mt-4">
+    <h2 class="text-primary mb-4">Our Partner Shelters</h2>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        @foreach (var shelter in shelters)
+        {
+            <div class="col">
+                <div class="card shadow-sm h-100 border-primary border-opacity-25">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold text-primary">@shelter.Name</h5>
+                        <p class="card-text">
+                            <i class="bi bi-geo-alt-fill text-danger me-2"></i>@shelter.Address
+                        </p>
+                        <a href="/shelters/details/@shelter.Id" class="btn btn-outline-primary btn-sm">View Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<Shelter> shelters = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        shelters = await ShelterService.GetSheltersAsync();
+    }
+}
