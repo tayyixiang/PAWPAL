@@ -2,27 +2,44 @@
 using PAWPAL.Data;
 using PAWPAL.Models;
 
-namespace PAWPAL.Repositories
+namespace PAWPAL.Services
 {
-    public class PetRepository : IPetRepository
+    public class PetService
     {
         private readonly IDbContextFactory<ApplicationDbContext> _factory;
 
-        public PetRepository(IDbContextFactory<ApplicationDbContext> factory)
+        public PetService(IDbContextFactory<ApplicationDbContext> factory)
         {
             _factory = factory;
         }
 
-        public async Task<List<Pet>> GetAllPetsAsync()
+        public async Task<List<Pet>> GetPetsAsync(string? searchTerm, string? species, string? breed, int? minAge, int? shelterId)
         {
             using var context = _factory.CreateDbContext();
-            return await context.Pet.ToListAsync();
+            var query = context.Pet.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+                query = query.Where(p => p.Name.Contains(searchTerm));
+
+            if (!string.IsNullOrWhiteSpace(species) && species != "All")
+                query = query.Where(p => p.Species == species);
+
+            if (!string.IsNullOrWhiteSpace(breed) && breed != "All")
+                query = query.Where(p => p.Breed == breed);
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<List<string>> GetBreedsAsync()
+        {
+            using var context = _factory.CreateDbContext();
+            return await context.Pet.Select(p => p.Breed).Distinct().ToListAsync();
         }
 
         public async Task<Pet?> GetPetByIdAsync(int id)
         {
             using var context = _factory.CreateDbContext();
-            return await context.Pet.FirstOrDefaultAsync(p => p.Id == id);
+            return await context.Pet.FindAsync(id);
         }
 
         public async Task AddPetAsync(Pet pet)
@@ -35,7 +52,7 @@ namespace PAWPAL.Repositories
         public async Task UpdatePetAsync(Pet pet)
         {
             using var context = _factory.CreateDbContext();
-            context.Entry(pet).State = EntityState.Modified;
+            context.Pet.Update(pet);
             await context.SaveChangesAsync();
         }
 
