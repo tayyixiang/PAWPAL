@@ -1,11 +1,25 @@
 ﻿@using PAWPAL.Components.Account.Shared
+
 <Router AppAssembly="typeof(Program).Assembly">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
-            <NotAuthorized>
-                <RedirectToLogin />
+            <NotAuthorized Context="authState">
+                @if (authState.User.Identity?.IsAuthenticated ?? false)
+                {
+                    <div class="container mt-4">
+                        <div class="alert alert-danger">
+                            You do not have permission to access this page.
+                        </div>
+                        <a class="btn btn-secondary" href="/">Go back home</a>
+                    </div>
+                }
+                else
+                {
+                    <RedirectToLogin />
+                }
             </NotAuthorized>
         </AuthorizeRouteView>
+
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
 </Router>

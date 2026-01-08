@@ -7,23 +7,14 @@
     <base href="/" />
     <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="app.css" />
-    <link rel="stylesheet" href="PAWPAL.styles.css" />
+    <link rel="stylesheet" href="PAWPALme.styles.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
-    <HeadOutlet @rendermode="RenderModeForPage" />
+    <HeadOutlet />
 </head>
 
 <body>
-    <Routes @rendermode="RenderModeForPage" />
+    <Routes />
     <script src="_framework/blazor.web.js"></script>
 </body>
 
 </html>
-
-@code {
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
-
-    private IComponentRenderMode? RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/Account")
-        ? null
-        : InteractiveServer;
-}
